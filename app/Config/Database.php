@@ -35,7 +35,7 @@ class Database extends Config
         'hostname' => 'localhost',
         'username' => 'Davi',
         'password' => 'Daviafonso@144.',
-        'database' => 'projetodb',
+        'database' => 'davi',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,

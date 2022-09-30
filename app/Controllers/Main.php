@@ -5,6 +5,8 @@ namespace App\Controllers;
 use CodeIgniter\HTTP\request;
 use CodeIgniter\controller;
 use App\Libraries\loja\venda;
+use App\Libraries\Clientes;
+use App\Models\Modelo;
 
 
 
@@ -618,15 +620,90 @@ public function deletedadosconfirm($id_job){
 
 }
 */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
 
+public function index15(){
+    {
+            $data = [];
+            if (session()->has('erro')) {
+                $data['erro'] = session('erro');
+            }
+            return view('pagina8', $data);
+        }
 
-public function index16(){
+}
+public function submeter()
+    {
+        if ($this->request->getMethod() != 'post') {
+            return redirect()->to(site_url('public/main/index15'));
+        }
 
 
+
+        $validacao = $this->validate([
+
+            'nome' => 'required|alpha_space',
+            'apelido' => 'required'
+
+        ],[
+
+            'nome' => [
+                'required' => 'Nome é um campo de preenchimento obrigatório',
+                'alpha_space' => 'Nome só pode conter letras e espaços'
+            ],
+
+            'apelido' => [
+                'required' => 'Apelido é um campo de preenchimento obrigatório',
+            ]
+        ]);
+
+
+        if (!$validacao) {
+            return redirect()->to(site_url('public/main/index15'))->withInput()->with('erro', $this->validator);
+        } else {
+            echo 'Formulário preenchido com sucesso';
+
+        }
+
+}
+
+
+
+
+
+public function index16()
+    {
+        $db = db_connect();
+
+        echo '<pre>';
+        $tabelas = $db->listTables();
+        print_r($tabelas);
+
+
+        $colunas = $db->getFieldNames('cliente');
+        echo '<pre>';
+        print_r($colunas);
+
+        $db->close();
+
+
+
+
+}
+
+
+
+public function index17(){
+
+        $Clientes = new Clientes();
+        $resultados = $Clientes->todosClientes();
+
+        echo '<pre>';
+        print_r($resultados);
 
 
 
@@ -639,19 +716,13 @@ public function index16(){
 
 
 
+//erro
 
 
-
-
-
-
-
-
-
-public function teste20(){
+public function index18(){
     $db = db_connect();
 
-        $tabela = $db->table('dados');
+        $tabela = $db->table('cliente');
 
 
 
@@ -659,9 +730,9 @@ public function teste20(){
 
 
 
-       foreach($dados->getResult('dados') as $lojas){
+       foreach($dados->getResult('cliente') as $clientes){
 
-           echo $lojas->job  . '</br>';
+           echo $clientes->nome  . '</br>';
 
        }
 
@@ -670,6 +741,129 @@ public function teste20(){
        $db->close();
 
 }
+
+
+
+
+
+
+
+
+public function index19(){
+
+    $db= db_connect();
+    $t = $db->table('cliente');
+
+    $dados = $t->select('idCliente, nome, profissao')->get()->getResultObject();
+    
+    $this->printArray($dados);
+
+    $db->close();
+
+    //echo '<pre>';
+    //print_r($dados);
+
+
+}
+
+
+
+public function index20(){
+    $db= db_connect();
+
+    $dados = [
+        'nome' => 'Amanda',
+        'email' => 'Amanda@gmail.com',
+        'profissao' => 'Cozinheira',
+    ];
+
+
+    $t = $db->table('cliente')->insert($dados);
+
+    
+    
+    $this->printArray($dados);
+
+    $db->close();
+
+}
+
+
+public function index21(){
+    $db= db_connect();
+
+    $dados = [
+        'nome' => 'Amanda',
+        'email' => 'Amanda@gmail.com',
+        'profissao' => 'Cozinheira',
+    ];
+
+
+    $t = $db->table('cliente')->where('idCliente', 5)->update($dados);
+
+    
+    
+    $this->printArray($dados);
+
+    $db->close();
+
+
+}
+
+
+
+
+public function index22_delete(){
+    $db= db_connect();
+
+    $t = $db->table('cliente')->delete(['idCliente' => 23]);
+
+    
+    $this->printArray($t);
+
+    $db->close();
+
+
+
+
+}
+
+
+public function printArray($dados){
+    if(is_array($dados)){
+        echo '<pre>';
+        print_r($dados);
+
+    } else {
+        echo $dados;
+    }
+
+
+
+
+}
+
+
+public function model(){
+
+    $cliente = new Modelo();
+    $cliente = $cliente->buscarCliente(3);
+    $this->printArray($cliente);
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
